@@ -9,7 +9,70 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Orthanc',
-      home: HomePage(),
+      home: LoginPage(),
+    );
+  }
+}
+
+class LoginPage extends StatelessWidget {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController urlController = TextEditingController();
+
+  void _login(BuildContext context) {
+    // Perform login logic here
+
+    // Navigate to another page
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: usernameController,
+              decoration: InputDecoration(
+                labelText: 'Username',
+              ),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password',
+              ),
+            ),
+            SizedBox(height: 16.0),
+            TextField(
+              controller: urlController,
+              decoration: InputDecoration(
+                labelText: 'URL',
+              ),
+            ),
+            SizedBox(height: 32.0),
+            ElevatedButton(
+              onPressed: () {
+                _login(context);
+              },
+              child: Text('Login'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -29,7 +92,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getStudies() async {
-    var response = await http.get(Uri.parse('https://demo.orthanc-server.com/studies?expand'));
+    var response = await http
+        .get(Uri.parse('https://demo.orthanc-server.com/studies?expand'));
     if (response.statusCode == 200) {
       setState(() {
         _studies = jsonDecode(response.body);
@@ -50,8 +114,10 @@ class _HomePageState extends State<HomePage> {
         itemBuilder: (context, index) {
           final study = _studies[index];
           //print('${_studies[index]['MainDicomTags']}');
-          final studyDate = _studies[index]['PatientMainDicomTags']['PatientName'];
-          final studyDescription = _studies[index]['MainDicomTags']['StudyDescription'];
+          final studyDate =
+              _studies[index]['PatientMainDicomTags']['PatientName'];
+          final studyDescription =
+              _studies[index]['MainDicomTags']['StudyDescription'];
           return ListTile(
             title: Text(studyDate ?? ''),
             subtitle: Text(studyDescription ?? ''),
@@ -89,7 +155,8 @@ class _StudyDetailsState extends State<StudyDetails> {
   }
 
   void _getSeries() async {
-    var response = await http.get(Uri.parse('https://demo.orthanc-server.com/studies/${widget.study['ID']}/series?expand'));
+    var response = await http.get(Uri.parse(
+        'https://demo.orthanc-server.com/studies/${widget.study['ID']}/series?expand'));
     if (response.statusCode == 200) {
       setState(() {
         _series = jsonDecode(response.body);
@@ -110,9 +177,11 @@ class _StudyDetailsState extends State<StudyDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Study Description: ${widget.study['MainDicomTags']['StudyDescription'] ?? ''}'),
+            Text(
+                'Study Description: ${widget.study['MainDicomTags']['StudyDescription'] ?? ''}'),
             SizedBox(height: 8.0),
-            Text('Study Date: ${widget.study['MainDicomTags']['StudyDate'] ?? ''}'),
+            Text(
+                'Study Date: ${widget.study['MainDicomTags']['StudyDate'] ?? ''}'),
             SizedBox(height: 8.0),
             Text('Study ID: ${widget.study['ID']}'),
             SizedBox(height: 32.0),
@@ -130,8 +199,10 @@ class _StudyDetailsState extends State<StudyDetails> {
               itemBuilder: (context, index) {
                 final series = _series[index];
                 //print('${_series[index]['MainDicomTags']}');
-                final seriesNumber = _series[index]['MainDicomTags']['SeriesNumber'];
-                final seriesDescription = _series[index]['MainDicomTags']['SeriesDescription'];
+                final seriesNumber =
+                    _series[index]['MainDicomTags']['SeriesNumber'];
+                final seriesDescription =
+                    _series[index]['MainDicomTags']['SeriesDescription'];
                 return ListTile(
                   title: Text(seriesNumber ?? ''),
                   subtitle: Text(seriesDescription ?? ''),
@@ -153,7 +224,6 @@ class _StudyDetailsState extends State<StudyDetails> {
   }
 }
 
-
 class SeriesDetails extends StatefulWidget {
   final dynamic series;
 
@@ -164,17 +234,17 @@ class SeriesDetails extends StatefulWidget {
 }
 
 class _SeriesDetailsState extends State<SeriesDetails> {
-
   @override
   void initState() {
     super.initState();
   }
 
-  
   @override
   Widget build(BuildContext context) {
     List<dynamic> _instances = widget.series['Instances'];
-    final imageUrls = _instances.map((e) => 'https://demo.orthanc-server.com/instances/$e/file').toList();
+    final imageUrls = _instances
+        .map((e) => 'https://demo.orthanc-server.com/instances/$e/file')
+        .toList();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.series['MainDicomTags']['SeriesDescription']),
@@ -184,11 +254,14 @@ class _SeriesDetailsState extends State<SeriesDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Series Manufacturer: ${widget.series['MainDicomTags']['Manufacturer'] ?? ''}'),
+            Text(
+                'Series Manufacturer: ${widget.series['MainDicomTags']['Manufacturer'] ?? ''}'),
             SizedBox(height: 8.0),
-            Text('Series Modality: ${widget.series['MainDicomTags']['Modality'] ?? ''}'),
+            Text(
+                'Series Modality: ${widget.series['MainDicomTags']['Modality'] ?? ''}'),
             SizedBox(height: 8.0),
-            Text('Series Procedure Description: ${widget.series['MainDicomTags']['PerformedProcedureStepDescription'] ?? ''}'),
+            Text(
+                'Series Procedure Description: ${widget.series['MainDicomTags']['PerformedProcedureStepDescription'] ?? ''}'),
             SizedBox(height: 8.0),
             Text('Series ID: ${widget.series['ID']}'),
             SizedBox(height: 32.0),
@@ -224,4 +297,3 @@ class _SeriesDetailsState extends State<SeriesDetails> {
     );
   }
 }
-
