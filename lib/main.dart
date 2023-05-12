@@ -14,19 +14,26 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController urlController = TextEditingController();
 
   void _login(BuildContext context) {
-    // Perform login logic here
-
     // Navigate to another page
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => HomePage(),
+        builder: (context) => HomePage(
+          url: urlController.text,
+          username: usernameController.text,
+          password: passwordController.text,
+        ),
       ),
     );
   }
@@ -78,6 +85,12 @@ class LoginPage extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
+  final String url;
+  final String username;
+  final String password;
+
+  HomePage({required this.url, required this.username, required this.password});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -92,8 +105,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getStudies() async {
-    var response = await http
-        .get(Uri.parse('https://demo.orthanc-server.com/studies?expand'));
+    print('${widget.url}');
+    print('${widget.username}');
+    print('${widget.password}');
+    var response = await http.get(Uri.parse('${widget.url}studies?expand'));
     if (response.statusCode == 200) {
       setState(() {
         _studies = jsonDecode(response.body);
