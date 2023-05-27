@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,8 +24,39 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController urlController = TextEditingController();
+  SharedPreferences? _prefs;
+  bool? _rememberMe;
+
+  @override
+  void initState() {
+    super.initState();
+    initSharedPreferences();
+  }
+
+  void initSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _rememberMe = _prefs?.getBool('rememberMe') ?? false;
+      if (_rememberMe!) {
+        usernameController.text = _prefs?.getString('username') ?? '';
+        passwordController.text = _prefs?.getString('password') ?? '';
+        urlController.text = _prefs?.getString('url') ?? '';
+      }
+    });
+  }
 
   void _login(BuildContext context) {
+
+     if (_rememberMe!) {
+      _prefs?.setString('username', usernameController.text);
+      _prefs?.setString('password', passwordController.text);
+      _prefs?.setString('url', urlController.text);
+    } else {
+      _prefs?.remove('username');
+      _prefs?.remove('password');
+      _prefs?.remove('url');
+    }
+
     // Navigate to another page
     Navigator.push(
       context,
@@ -69,6 +101,19 @@ class _LoginPageState extends State<LoginPage> {
               decoration: InputDecoration(
                 labelText: 'URL',
               ),
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: _rememberMe ?? false,
+                  onChanged: (value) {
+                    setState(() {
+                      _rememberMe = value;
+                    });
+                  },
+                ),
+                Text('Remember me'),
+              ],
             ),
             SizedBox(height: 32.0),
             ElevatedButton(
