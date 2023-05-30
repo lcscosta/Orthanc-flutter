@@ -24,38 +24,42 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController urlController = TextEditingController();
-  SharedPreferences? _prefs;
-  bool? _rememberMe;
+  bool _rememberMe = false;
 
   @override
   void initState() {
     super.initState();
-    initSharedPreferences();
+    _loadSharedPreferences();
   }
 
-  void initSharedPreferences() async {
-    _prefs = await SharedPreferences.getInstance();
+  Future<void> _loadSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _rememberMe = _prefs?.getBool('rememberMe') ?? false;
-      if (_rememberMe!) {
-        usernameController.text = _prefs?.getString('username') ?? '';
-        passwordController.text = _prefs?.getString('password') ?? '';
-        urlController.text = _prefs?.getString('url') ?? '';
+      _rememberMe = prefs.getBool('rememberMe') ?? false;
+      if (_rememberMe) {
+        usernameController.text = prefs.getString('username') ?? '';
+        passwordController.text = prefs.getString('password') ?? '';
+        urlController.text = prefs.getString('url') ?? '';
       }
     });
   }
 
-  void _login(BuildContext context) {
+  Future<void> _saveSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('rememberMe', _rememberMe);
+    prefs.setString('username', usernameController.text);
+    prefs.setString('password', passwordController.text);
+    prefs.setString('url', urlController.text);
+  }
 
-     if (_rememberMe!) {
-      _prefs?.setString('username', usernameController.text);
-      _prefs?.setString('password', passwordController.text);
-      _prefs?.setString('url', urlController.text);
-    } else {
-      _prefs?.remove('username');
-      _prefs?.remove('password');
-      _prefs?.remove('url');
+  void _login(BuildContext context) {
+    // Validate input
+    if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
+      return;
     }
+
+    // Save input
+    _saveSharedPreferences();
 
     // Navigate to another page
     Navigator.push(
@@ -108,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                   value: _rememberMe ?? false,
                   onChanged: (value) {
                     setState(() {
-                      _rememberMe = value;
+                      _rememberMe = value!;
                     });
                   },
                 ),
