@@ -78,53 +78,53 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: usernameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Username',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: passwordController,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: urlController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'URL',
               ),
             ),
             Row(
               children: [
                 Checkbox(
-                  value: _rememberMe ?? false,
+                  value: _rememberMe,
                   onChanged: (value) {
                     setState(() {
                       _rememberMe = value!;
                     });
                   },
                 ),
-                Text('Remember me'),
+                const Text('Remember me'),
               ],
             ),
-            SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: () {
                 _login(context);
               },
-              child: Text('Login'),
+              child: const Text('Login'),
             ),
           ],
         ),
@@ -171,7 +171,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Orthanc'),
+        title: const Text('Orthanc'),
       ),
       body: ListView.builder(
         itemCount: _studies.length,
@@ -237,26 +237,26 @@ class _StudyDetailsState extends State<StudyDetails> {
         title: Text(widget.study['PatientMainDicomTags']['PatientName']),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
                 'Study Description: ${widget.study['MainDicomTags']['StudyDescription'] ?? ''}'),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
                 'Study Date: ${widget.study['MainDicomTags']['StudyDate'] ?? ''}'),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text('Study ID: ${widget.study['ID']}'),
-            SizedBox(height: 32.0),
-            Text(
+            const SizedBox(height: 32.0),
+            const Text(
               'Series',
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             ListView.builder(
               shrinkWrap: true,
               itemCount: _series.length,
@@ -314,34 +314,34 @@ class _SeriesDetailsState extends State<SeriesDetails> {
         title: Text(widget.series['MainDicomTags']['SeriesDescription']),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
                 'Series Manufacturer: ${widget.series['MainDicomTags']['Manufacturer'] ?? ''}'),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
                 'Series Modality: ${widget.series['MainDicomTags']['Modality'] ?? ''}'),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
                 'Series Procedure Description: ${widget.series['MainDicomTags']['PerformedProcedureStepDescription'] ?? ''}'),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text('Series ID: ${widget.series['ID']}'),
-            SizedBox(height: 32.0),
-            Text(
+            const SizedBox(height: 32.0),
+            const Text(
               'Instances',
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Expanded(
               child: SingleChildScrollView(
                 child: Scrollbar(
                   child: ListView.builder(
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: _instances.length,
                     itemBuilder: (context, index) {
